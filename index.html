@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" href="style.css">
+  <title>Drive Telemetry</title>
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Drive Telemetry</h1>
+  </header>
+
+  <main>
+    <div id="g-meter">
+      <svg viewBox="-255 -105 510 210">
+        <rect x="-100" y="-40" width="200" height="80" fill="transparent" stroke="skyblue" stroke-width="4" rx="20" />
+        <rect x="-150" y="-60" width="300" height="120" fill="transparent" stroke="skyblue" stroke-width="4" rx="20" />
+        <rect x="-200" y="-80" width="400" height="160" fill="transparent" stroke="skyblue" stroke-width="4" rx="20" />
+        <rect x="-250" y="-100" width="500" height="200" fill="transparent" stroke="white" stroke-width="4" rx="20" />
+        <text x="0" y="0" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle">0.0
+          G</text>
+      </svg>
+    </div>
+    <div id="speed-meter">
+      0 KM/H
+    </div>
+    <div id="sector-info"></div>
+    <div id="history"></div>
+  </main>
+
+  <footer>
+    Ⓒ 2026 abs-128int8
+  </footer>
+</body>
+
+</html>
