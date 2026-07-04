@@ -49,6 +49,14 @@ footer {
 #speed-meter {
   margin-top: 16px;
   text-align: center;
-  font-size: 24px;
+  font-size: 40px;
   font-weight: bold;
+}
+
+.gmeter-segment {
+  opacity: 0;
+}
+
+.gmeter-segment.active {
+  opacity: 1;
 }
