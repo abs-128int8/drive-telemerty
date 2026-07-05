@@ -28,13 +28,68 @@
       </svg>
     </div>
     <div id="speed-meter">
-      0 KM/H
+      <section id="speed">
+        <span id="speed-value">0</span>
+        <span>KM/H</span>
+      </section>
+      <section id="stop-time">
+        <span>Stop</span>
+        <span id="stop-time-value">0</span>
+        <span>s</span>
+      </section>
+      <section id="status">
+        <div id="distance">
+          <span id="distance-value">0.00</span>
+          <span>km</span>
+        </div>
+        <div id="time">00:00:00</div>
+      </section>
     </div>
-    <div id="sector-info"></div>
-    <div id="history"></div>
+    <hr>
+    <div id="sector-info">
+      <div id="sector-header">
+        <span>#</span>
+        <span id="sector-number">0</span>
+        <span>&nbsp;</span>
+        <span id="sector-start">00:00:00</span>
+      </div>
+      <div id="sector-values">
+        <section id="sector-distance">
+          <span class="sector-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <span id="sector-distance-value" class="sector-value">0.00</span>
+          <span class="sector-unit">km</span>
+        </section>
+        <section id="sector-time">
+          <span id="sector-time-value" class="sector-value">00:00:00</span>
+        </section>
+        <section id="sector-max-velocity">
+          <span class="sector-label">max</span>
+          <span id="sector-max-velocity-value" class="sector-value">0.00</span>
+          <span class="sector-unit">km/h</span>
+        </section>
+        <section id="sector-avg-velocity">
+          <span class="sector-label">avg</span>
+          <span id="sector-avg-velocity-value" class="sector-value">0.00</span>
+          <span class="sector-unit">km/h</span>
+        </section>
+        <section id="sector-max-acceleration">
+          <span class="sector-label">max</span>
+          <span id="sector-max-acceleration-value" class="sector-value">0.00</span>
+          <span class="sector-unit">G</span>
+        </section>
+        <section id="sector-0-20">
+          <span class="sector-label">020</span>
+          <span id="sector-0-20-value" class="sector-value">0.00</span>
+          <span class="sector-unit">s</span>
+        </section>
+      </div>
+    </div>
+    <hr>
+    <div id="history">
+    </div>
   </main>
 
-  <footer>
+  <footer class="flex-center">
     Ⓒ 2026 abs-128int8
   </footer>
 </body>
