@@ -1,3 +1,7 @@
+:root {
+  --bg-color: #5476a0;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +14,7 @@ body {
   width: 100%;
   overflow-x: hidden;
   font-family: Arial, sans-serif;
-  background-color: #5476a0;
+  background-color: var(--bg-color);
   color: #fff;
 }
 
@@ -21,19 +25,24 @@ body {
 }
 
 header {
-  height: 60px;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 60px;
 }
 
 main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 16px;
   overflow-y: auto;
 }
 
 footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 40px;
 }
 
@@ -85,8 +94,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 30%;
-  max-width: 400px;
+  width: min(300px, 90%);
 }
 
 #distance {
@@ -108,8 +116,7 @@ footer {
 }
 
 #sector-header {
-  width: 50%;
-  max-width: 400px;
+  width: min(400px, 90%);
   font-size: 25px;
   margin-bottom: 16px;
 }
@@ -118,8 +125,7 @@ footer {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-  width: 45%;
-  max-width: 350px;
+  width: min(350px, 90%);
 }
 
 .sector-value {
@@ -134,4 +140,37 @@ footer {
 .sector-unit {
   font-size: 14px;
   color: #ccc;
+}
+
+#history {
+  margin: 16px auto 0 auto;
+  width: min(400px, 90%);
+  max-width: 400px;
+  overflow-y: scroll;
+  height: auto;
+}
+
+#history-table {
+  width: 100%;
+  table-layout: fixed;
+  text-align: center;
+  border-spacing: 0 3px;
+}
+
+#history-table td:nth-child(1) {
+  width: 10%;
+}
+
+#history-table td:nth-child(2) {
+  width: 45%;
+}
+
+#history-table td:nth-child(3) {
+  width: 45%;
+}
+
+#history-table tr.selected {
+  background-color: rgba(173, 216, 230, 0.8);
+  color: black;
+  font-size: 18px;
 }

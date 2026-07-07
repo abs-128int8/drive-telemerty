@@ -28,22 +28,22 @@
       </svg>
     </div>
     <div id="speed-meter">
-      <section id="speed">
+      <div id="speed">
         <span id="speed-value">0</span>
         <span>KM/H</span>
-      </section>
-      <section id="stop-time">
+      </div>
+      <div id="stop-time">
         <span>Stop</span>
         <span id="stop-time-value">0</span>
         <span>s</span>
-      </section>
-      <section id="status">
+      </div>
+      <div id="status">
         <div id="distance">
           <span id="distance-value">0.00</span>
           <span>km</span>
         </div>
         <div id="time">00:00:00</div>
-      </section>
+      </div>
     </div>
     <hr>
     <div id="sector-info">
@@ -54,42 +54,51 @@
         <span id="sector-start">00:00:00</span>
       </div>
       <div id="sector-values">
-        <section id="sector-distance">
+        <div id="sector-distance">
           <span class="sector-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span id="sector-distance-value" class="sector-value">0.00</span>
           <span class="sector-unit">km</span>
-        </section>
-        <section id="sector-time">
+        </div>
+        <div id="sector-time">
           <span id="sector-time-value" class="sector-value">00:00:00</span>
-        </section>
-        <section id="sector-max-velocity">
+        </div>
+        <div id="sector-max-velocity">
           <span class="sector-label">max</span>
           <span id="sector-max-velocity-value" class="sector-value">0.00</span>
           <span class="sector-unit">km/h</span>
-        </section>
-        <section id="sector-avg-velocity">
+        </div>
+        <div id="sector-avg-velocity">
           <span class="sector-label">avg</span>
           <span id="sector-avg-velocity-value" class="sector-value">0.00</span>
           <span class="sector-unit">km/h</span>
-        </section>
-        <section id="sector-max-acceleration">
+        </div>
+        <div id="sector-max-acceleration">
           <span class="sector-label">max</span>
           <span id="sector-max-acceleration-value" class="sector-value">0.00</span>
           <span class="sector-unit">G</span>
-        </section>
-        <section id="sector-0-20">
+        </div>
+        <div id="sector-0-20">
           <span class="sector-label">020</span>
           <span id="sector-0-20-value" class="sector-value">0.00</span>
           <span class="sector-unit">s</span>
-        </section>
+        </div>
       </div>
     </div>
     <hr>
     <div id="history">
+      <table id="history-table">
+        <tbody id="history-body">
+          <tr>
+            <td>#</td>
+            <td>0.00 km</td>
+            <td>00:00:00</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </main>
 
-  <footer class="flex-center">
+  <footer>
     Ⓒ 2026 abs-128int8
   </footer>
 </body>
