@@ -52,6 +52,7 @@ const telemetry = {
     lastPosition: null
   },
   currentSector: {
+    active: false,
     stats: {
       number: 0,
       startTime: null,
@@ -387,6 +388,8 @@ function addHistoryEntry(entry) {
 }
 
 function startNextSector() {
+  telemetry.currentSector.active = true;
+
   telemetry.currentSector.stats.number++;
   telemetry.currentSector.stats.startTime = Date.now();
 
@@ -402,6 +405,10 @@ function startNextSector() {
 }
 
 function finishCurrentSector() {
+  if (!telemetry.currentSector.active) {
+    return;
+  }
+  telemetry.currentSector.active = false;
   const entry = structuredClone(telemetry.currentSector.stats);
   telemetry.historyEntries.push(entry);
   addHistoryEntry(entry);
@@ -426,9 +433,7 @@ function onGPS(position) {
       if (!telemetry.speedMeter.stopTimeActive) {
         telemetry.speedMeter.stopTimeActive = true;
         telemetry.speedMeter.stopTimeStart = Date.now();
-        if (telemetry.currentSector.stats.number > 0) {
-          finishCurrentSector();
-        }
+        finishCurrentSector();
       }
       telemetry.speedMeter.speed = 0;
       telemetry.speedMeter.deltaTimeAccumulated += deltaTime;
