@@ -16,25 +16,27 @@
 
   <main>
     <div id="g-meter">
-      <svg viewBox="-255 -105 510 210">
+      <svg id="g-meter-svg" viewBox="-255 -105 510 210">
         <rect x="-100" y="-40" width="200" height="80" fill="transparent" stroke="lightblue" stroke-width="4" rx="20" />
         <rect x="-150" y="-60" width="300" height="120" fill="transparent" stroke="lightblue" stroke-width="4"
           rx="20" />
         <rect x="-200" y="-80" width="400" height="160" fill="transparent" stroke="lightblue" stroke-width="4"
           rx="20" />
         <rect x="-250" y="-100" width="500" height="200" fill="transparent" stroke="white" stroke-width="4" rx="20" />
-        <text x="0" y="0" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle"
-          id="acceleration-text">0.00 G</text>
+        <text x="0" y="0" font-size="40" fill="white" text-anchor="middle" dominant-baseline="middle">
+          <tspan id="acceleration-value">0.00</tspan>
+          <tspan>G</tspan>
+        </text>
       </svg>
     </div>
     <div id="speed-meter">
       <div id="speed">
-        <span id="speed-value">0</span>
+        <span id="speed-value">0.00</span>
         <span>KM/H</span>
       </div>
       <div id="stop-time">
         <span>Stop</span>
-        <span id="stop-time-value">0</span>
+        <span id="stop-time-value">0.0</span>
         <span>s</span>
       </div>
       <div id="status">
@@ -42,11 +44,11 @@
           <span id="distance-value">0.00</span>
           <span>km</span>
         </div>
-        <div id="time">00:00:00</div>
+        <div id="delta-time-value">00:00:00</div>
       </div>
     </div>
     <hr>
-    <div id="sector-info">
+    <div id="sector-stats">
       <div id="sector-header">
         <span>#</span>
         <span id="sector-number">0</span>
@@ -54,30 +56,30 @@
         <span id="sector-start">00:00:00</span>
       </div>
       <div id="sector-values">
-        <div id="sector-distance">
+        <div>
           <span class="sector-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
           <span id="sector-distance-value" class="sector-value">0.00</span>
           <span class="sector-unit">km</span>
         </div>
-        <div id="sector-time">
-          <span id="sector-time-value" class="sector-value">00:00:00</span>
+        <div>
+          <span id="sector-delta-time-value" class="sector-value">00:00:00</span>
         </div>
-        <div id="sector-max-velocity">
+        <div>
           <span class="sector-label">max</span>
-          <span id="sector-max-velocity-value" class="sector-value">0.00</span>
+          <span id="sector-max-speed-value" class="sector-value">0.00</span>
           <span class="sector-unit">km/h</span>
         </div>
-        <div id="sector-avg-velocity">
+        <div>
           <span class="sector-label">avg</span>
-          <span id="sector-avg-velocity-value" class="sector-value">0.00</span>
+          <span id="sector-avg-speed-value" class="sector-value">0.00</span>
           <span class="sector-unit">km/h</span>
         </div>
-        <div id="sector-max-acceleration">
+        <div>
           <span class="sector-label">max</span>
           <span id="sector-max-acceleration-value" class="sector-value">0.00</span>
           <span class="sector-unit">G</span>
         </div>
-        <div id="sector-0-20">
+        <div>
           <span class="sector-label">020</span>
           <span id="sector-0-20-value" class="sector-value">0.00</span>
           <span class="sector-unit">s</span>
@@ -88,11 +90,6 @@
     <div id="history">
       <table id="history-table">
         <tbody id="history-body">
-          <tr>
-            <td>#</td>
-            <td>0.00 km</td>
-            <td>00:00:00</td>
-          </tr>
         </tbody>
       </table>
     </div>

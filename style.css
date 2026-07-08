@@ -46,7 +46,7 @@ footer {
   height: 40px;
 }
 
-#g-meter svg {
+#g-meter-svg {
   height: 20vh;
   width: 100%;
   display: block;
@@ -102,12 +102,12 @@ footer {
   text-align: left;
 }
 
-#time {
+#delta-time-value {
   font-size: 25px;
   text-align: right;
 }
 
-#sector-info {
+#sector-stats {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -148,6 +148,7 @@ footer {
   max-width: 400px;
   overflow-y: scroll;
   height: auto;
+  font-size: 20px
 }
 
 #history-table {
@@ -172,5 +173,5 @@ footer {
 #history-table tr.selected {
   background-color: rgba(173, 216, 230, 0.8);
   color: black;
-  font-size: 18px;
+  font-size: 25px;
 }
