@@ -26,7 +26,7 @@ const uiElements = {
 }
 
 const gmeterSegments = {};
-const gmeterThreshold = [0.04, 0.2, 0.4];
+const gmeterThreshold = [0.2, 0.4, 0.6];
 const uiState = {
   gmeterActiveSegments: {},
   stopTimeActive: false,
@@ -41,6 +41,16 @@ const telemetry = {
         return Math.hypot(this.x, this.y);
       }
     },
+    calibration: {
+      gravity: null,
+      forward: null,
+      right: null
+    },
+    accelGravity: {
+      x: 0,
+      y: 0,
+      z: 0
+    }
   },
   speedMeter: {
     speed: 0,
@@ -49,7 +59,9 @@ const telemetry = {
     distanceAccumulated: 0,
     deltaTimeAccumulated: 0,
     lastTimestamp: null,
-    lastPosition: null
+    lastPosition: null,
+    stopCandidateStart: null,
+    moveCandidateStart: null,
   },
   currentSector: {
     active: false,
@@ -67,7 +79,9 @@ const telemetry = {
     speedSamples: 0,
     get averageSpeed() {
       return this.speedSamples > 0 ? this.speedSum / this.speedSamples : 0;
-    }
+    },
+    accel020Started: false,
+    accel020StartTime: null,
   },
   historyEntries: [],
   dirty: {
@@ -84,6 +98,27 @@ function radian(degree) {
 
 function degree(radian) {
   return (radian * 180) / Math.PI;
+}
+
+function normalize(v) {
+  const len = Math.hypot(v.x, v.y, v.z);
+  return {
+    x: v.x / len,
+    y: v.y / len,
+    z: v.z / len
+  };
+}
+
+function dot(a, b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+function cross(a, b) {
+  return {
+    x: a.y * b.z - a.z * b.y,
+    y: a.z * b.x - a.x * b.z,
+    z: a.x * b.y - a.y * b.x
+  };
 }
 
 function createSegment() {
@@ -305,7 +340,7 @@ function updateGMeter(gmeter) {
     delete uiState.gmeterActiveSegments[direction];
   }
 
-  uiElements.gmeter.accelValue.textContent = gmeter.accel.magnitude.toFixed(2);
+  uiElements.gmeter.accelValue.textContent = gmeter.accel.magnitude.toFixed(1);
 
   const levelX = getActiveSegmentCount(Math.abs(gmeter.accel.x));
   const levelY = getActiveSegmentCount(Math.abs(gmeter.accel.y));
@@ -402,6 +437,9 @@ function startNextSector() {
 
   telemetry.currentSector.speedSum = 0;
   telemetry.currentSector.speedSamples = 0;
+
+  telemetry.currentSector.accel020Started = false;
+  telemetry.currentSector.accel020StartTime = null;
 }
 
 function finishCurrentSector() {
@@ -421,6 +459,17 @@ function updateCurrentSector(speed, deltaTime) {
   telemetry.currentSector.speedSum += speed;
   telemetry.currentSector.speedSamples++;
   telemetry.currentSector.stats.avgSpeed = telemetry.currentSector.averageSpeed;
+  telemetry.currentSector.stats.maxAccel = Math.max(
+    telemetry.currentSector.stats.maxAccel,
+    telemetry.gmeter.accel.magnitude
+  );
+  if (!telemetry.currentSector.accel020Started && speed >= 5) {
+    telemetry.currentSector.accel020Started = true;
+    telemetry.currentSector.accel020StartTime = performance.now();
+  }
+  if (telemetry.currentSector.accel020Started && telemetry.currentSector.stats.accel020 === 0 && speed >= 20) {
+    telemetry.currentSector.stats.accel020 = (performance.now() - telemetry.currentSector.accel020StartTime) / 1000;
+  }
   telemetry.dirty.sectorStats = true;
 }
 
@@ -429,24 +478,43 @@ function onGPS(position) {
   const speed = position.coords.speed !== null ? position.coords.speed * 3.6 : null;
   telemetry.speedMeter.lastTimestamp = position.timestamp;
   if (speed !== null) {
-    if (speed <= 5) {
-      if (!telemetry.speedMeter.stopTimeActive) {
+    if (speed <= 2) {
+      // 停止状態
+      telemetry.speedMeter.moveCandidateStart = null;
+      if (!telemetry.speedMeter.stopCandidateStart) {
+        telemetry.speedMeter.stopCandidateStart = Date.now();
+      }
+
+      if (!telemetry.speedMeter.stopTimeActive && Date.now() - telemetry.speedMeter.stopCandidateStart >= 3000) {
         telemetry.speedMeter.stopTimeActive = true;
         telemetry.speedMeter.stopTimeStart = Date.now();
         finishCurrentSector();
       }
       telemetry.speedMeter.speed = 0;
       telemetry.speedMeter.deltaTimeAccumulated += deltaTime;
-    } else {
-      if (telemetry.speedMeter.stopTimeActive) {
+    } else if (speed >= 5) {
+      // 移動状態
+      telemetry.speedMeter.stopCandidateStart = null;
+      if (!telemetry.speedMeter.moveCandidateStart) {
+        telemetry.speedMeter.moveCandidateStart = Date.now();
+      }
+
+      if (telemetry.speedMeter.stopTimeActive && Date.now() - telemetry.speedMeter.moveCandidateStart >= 1000) {
         telemetry.speedMeter.stopTimeActive = false;
         telemetry.speedMeter.stopTimeStart = null;
         startNextSector();
       }
       telemetry.speedMeter.speed = speed;
+      if (!telemetry.speedMeter.stopTimeActive) {
+        telemetry.speedMeter.deltaTimeAccumulated += deltaTime;
+        telemetry.speedMeter.distanceAccumulated += speed * deltaTime / 3600;
+        updateCurrentSector(speed, deltaTime);
+      }
+    } else {
+      telemetry.speedMeter.speed = speed;
       telemetry.speedMeter.deltaTimeAccumulated += deltaTime;
-      telemetry.speedMeter.distanceAccumulated += speed * deltaTime / 3600;
-      updateCurrentSector(speed, deltaTime);
+      telemetry.speedMeter.stopCandidateStart = null;
+      telemetry.speedMeter.moveCandidateStart = null;
     }
   } else {
     telemetry.speedMeter.speed = null;
@@ -472,6 +540,74 @@ function onErrorGPS(error) {
 }
 
 function onDeviceMotion(event) {
+
+  let a = event.acceleration;
+  let g = event.accelerationIncludingGravity;
+
+  if (!a || !g) {
+    return;
+  }
+
+  if (window.navigator.userAgent.indexOf("iPhone") > 0 || window.navigator.userAgent.indexOf("iPad") > 0 || window.navigator.userAgent.indexOf("iPod") > 0) {
+    a = {
+      x: -a.x,
+      y: -a.y,
+      z: -a.z
+    }
+    g = {
+      x: -g.x,
+      y: -g.y,
+      z: -g.z
+    }
+  }
+
+  telemetry.gmeter.accelGravity = g;
+
+  const calib = telemetry.gmeter.calibration;
+
+  if (!calib.forward) {
+    return;
+  }
+
+  telemetry.gmeter.accel.x =
+    dot(a, calib.forward) / 9.80665;
+
+  telemetry.gmeter.accel.y =
+    dot(a, calib.right) / 9.80665;
+
+  telemetry.dirty.gmeter = true;
+}
+
+function calibrateGMeter() {
+  const g = telemetry.gmeter.accelGravity;
+
+  if (!g) {
+    return;
+  }
+
+  const gravity = normalize({
+    x: g.x,
+    y: g.y,
+    z: g.z
+  });
+
+  const dotValue = -gravity.z;
+
+  let forward = {
+    x: gravity.x * dotValue,
+    y: gravity.y * dotValue,
+    z: -1 + gravity.z * dotValue
+  };
+
+  forward = normalize(forward);
+
+  const right = normalize(cross(forward, gravity));
+
+  telemetry.gmeter.calibration.gravity = gravity;
+  telemetry.gmeter.calibration.forward = forward;
+  telemetry.gmeter.calibration.right = right;
+
+  telemetry.dirty.gmeter = true;
 }
 
 function onHistoryEntryClick(event) {
@@ -536,7 +672,19 @@ function main() {
     alert("ブラウザがGPSに対応していません");
   }
 
+  if (typeof DeviceMotionEvent.requestPermission === "function") {
+    Promise.all([DeviceMotionEvent.requestPermission(), DeviceOrientationEvent.requestPermission(),])
+      .then(([motionPermission, orientationPermission]) => {
+        if (motionPermission === "granted" && orientationPermission === "granted") {
+          window.addEventListener("devicemotion", onDeviceMotion);
+        }
+      });
+  } else {
+    window.addEventListener("devicemotion", onDeviceMotion);
+  }
+
   uiElements.history.addEventListener("click", onHistoryEntryClick);
+  uiElements.gmeter.svg.addEventListener("click", calibrateGMeter);
 
   createSegment();
   render();
