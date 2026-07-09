@@ -570,10 +570,10 @@ function onDeviceMotion(event) {
   }
 
   telemetry.gmeter.accel.x =
-    dot(a, calib.forward) / 9.80665;
+    dot(a, calib.right) / 9.80665;
 
   telemetry.gmeter.accel.y =
-    dot(a, calib.right) / 9.80665;
+    dot(a, calib.forward) / 9.80665;
 
   telemetry.dirty.gmeter = true;
 }
