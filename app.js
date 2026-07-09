@@ -26,7 +26,7 @@ const uiElements = {
 }
 
 const gmeterSegments = {};
-const gmeterThreshold = [0.2, 0.4, 0.6];
+const gmeterThreshold = [0.05, 0.3, 0.5];
 const uiState = {
   gmeterActiveSegments: {},
   stopTimeActive: false,
@@ -340,7 +340,7 @@ function updateGMeter(gmeter) {
     delete uiState.gmeterActiveSegments[direction];
   }
 
-  uiElements.gmeter.accelValue.textContent = gmeter.accel.magnitude.toFixed(1);
+  uiElements.gmeter.accelValue.textContent = gmeter.accel.magnitude.toFixed(2);
 
   const levelX = getActiveSegmentCount(Math.abs(gmeter.accel.x));
   const levelY = getActiveSegmentCount(Math.abs(gmeter.accel.y));
@@ -419,7 +419,7 @@ function addHistoryEntry(entry) {
   row.appendChild(numberCell);
   row.appendChild(distanceCell);
   row.appendChild(timeCell);
-  uiElements.history.appendChild(row);
+  uiElements.history.prepend(row);
 }
 
 function startNextSector() {
@@ -569,11 +569,11 @@ function onDeviceMotion(event) {
     return;
   }
 
-  telemetry.gmeter.accel.x =
-    dot(a, calib.right) / 9.80665;
+  const newX = dot(a, calib.right) / 9.80665;
+  const newY = dot(a, calib.forward) / 9.80665;
 
-  telemetry.gmeter.accel.y =
-    dot(a, calib.forward) / 9.80665;
+  telemetry.gmeter.accel.x = telemetry.gmeter.accel.x * 0.9 + newX * 0.1;
+  telemetry.gmeter.accel.y = telemetry.gmeter.accel.y * 0.9 + newY * 0.1;
 
   telemetry.dirty.gmeter = true;
 }
