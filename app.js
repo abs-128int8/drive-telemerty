@@ -569,8 +569,8 @@ function onDeviceMotion(event) {
     return;
   }
 
-  const newX = dot(a, calib.right) / 9.80665;
-  const newY = dot(a, calib.forward) / 9.80665;
+  const newX = -dot(a, calib.right) / 9.80665;
+  const newY = -dot(a, calib.forward) / 9.80665;
 
   telemetry.gmeter.accel.x = telemetry.gmeter.accel.x * 0.9 + newX * 0.1;
   telemetry.gmeter.accel.y = telemetry.gmeter.accel.y * 0.9 + newY * 0.1;
